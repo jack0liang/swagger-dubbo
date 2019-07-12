@@ -11,10 +11,21 @@
 	<artifactId>swagger-dubbo</artifactId>
 	<packaging>jar</packaging>
 	<name>swagger-dubbo</name>
+	<version>2.0.1-gialen-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>rdc-releases</id>
+			<url>https://repo.rdc.aliyun.com/repository/70825-release-b7UBPp/</url>
+		</repository>
+		<snapshotRepository>
+			<id>rdc-snapshots</id>
+			<url>https://repo.rdc.aliyun.com/repository/70825-snapshot-2iY0JV/</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<dependencies>
 
 		<dependency>
