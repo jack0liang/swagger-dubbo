@@ -1,21 +1,15 @@
 package com.deepoove.swagger.dubbo.http;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
+import com.deepoove.swagger.dubbo.reader.NameDiscover;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.models.HttpMethod;
+import io.swagger.util.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.deepoove.swagger.dubbo.reader.NameDiscover;
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.models.HttpMethod;
-import io.swagger.util.ReflectionUtils;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class HttpMatch {
 
@@ -50,9 +44,10 @@ public class HttpMatch {
 				String nickname = null == apiOperation ? null : apiOperation.nickname();
 				if (operationId != null) {
 					if (!operationId.equals(nickname)) continue;
-				} else {
-					if (StringUtils.isNotBlank(nickname)) continue;
 				}
+//				else {
+//					if (StringUtils.isNotBlank(nickname)) continue;
+//				}
 				if (requestMethod != null) {
 					String httpMethod = null == apiOperation ? null : apiOperation.httpMethod();
 					if (StringUtils.isNotBlank(httpMethod) && !requestMethod.equals(httpMethod))

@@ -1,13 +1,13 @@
 package com.deepoove.swagger.dubbo.web;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.deepoove.swagger.dubbo.http.HttpMatch;
+import com.deepoove.swagger.dubbo.http.ReferenceManager;
+import com.deepoove.swagger.dubbo.reader.NameDiscover;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import io.swagger.annotations.Api;
+import io.swagger.util.Json;
+import io.swagger.util.PrimitiveType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,15 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.deepoove.swagger.dubbo.http.HttpMatch;
-import com.deepoove.swagger.dubbo.http.ReferenceManager;
-import com.deepoove.swagger.dubbo.reader.NameDiscover;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import io.swagger.annotations.Api;
-import io.swagger.util.Json;
-import io.swagger.util.PrimitiveType;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Map.Entry;
 
 @Controller
 @RequestMapping("${swagger.dubbo.http:h}")
@@ -44,7 +41,7 @@ public class DubboHttpController {
 	@Value("${swagger.dubbo.cluster:rpc}")
 	private String cluster = CLUSTER_RPC;
 
-	@RequestMapping(value = "/{interfaceClass}/{methodName}", produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/{interfaceClass:.+}/{methodName}", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public ResponseEntity<String> invokeDubbo(@PathVariable("interfaceClass") String interfaceClass,
 			@PathVariable("methodName") String methodName, HttpServletRequest request,
@@ -52,7 +49,7 @@ public class DubboHttpController {
 		return invokeDubbo(interfaceClass, methodName, null, request, response);
 	}
 
-	@RequestMapping(value = "/{interfaceClass}/{methodName}/{operationId}", produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/{interfaceClass:.+}/{methodName}/{operationId}", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public ResponseEntity<String> invokeDubbo(@PathVariable("interfaceClass") String interfaceClass,
 			@PathVariable("methodName") String methodName,
@@ -84,7 +81,11 @@ public class DubboHttpController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
 		String[] parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(method);
-		
+		if(parameterNames==null||parameterNames.length==0){
+			Method interfaceMethod = httpMatch.matchRefMethod(interfaceMethods, methodName, request.getParameterMap().keySet());
+			if(interfaceMethod!=null)
+				parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(interfaceMethod);
+		}
 		logger.info("[Swagger-dubbo] Invoke by " + cluster);
 		if (CLUSTER_RPC.equals(cluster)){
     		ref = ReferenceManager.getInstance().getProxy(interfaceClass);
