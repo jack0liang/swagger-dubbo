@@ -80,11 +80,12 @@ public class DubboHttpController {
 		    logger.info("No Service Method FOUND.");
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
-		String[] parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(method);
+		String[] parameterNames = null;
+		Method interfaceMethod = httpMatch.matchRefMethod(interfaceMethods, methodName, request.getParameterMap().keySet());
+		if(interfaceMethod!=null)
+			parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(interfaceMethod);
 		if(parameterNames==null||parameterNames.length==0){
-			Method interfaceMethod = httpMatch.matchRefMethod(interfaceMethods, methodName, request.getParameterMap().keySet());
-			if(interfaceMethod!=null)
-				parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(interfaceMethod);
+			parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(method);
 		}
 		logger.info("[Swagger-dubbo] Invoke by " + cluster);
 		if (CLUSTER_RPC.equals(cluster)){
