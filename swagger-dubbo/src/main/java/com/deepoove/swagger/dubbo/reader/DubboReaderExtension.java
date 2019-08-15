@@ -329,12 +329,12 @@ public class DubboReaderExtension implements ReaderExtension {
 		}
 	}
 
-	private static Type getResponseType(Method method) {
+	private static Type getResponseType(Method method, Method interfaceMethod) {
 		final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
 		if (apiOperation != null && !ReflectionUtils.isVoid(apiOperation.response())) {
 			return apiOperation.response();
 		} else {
-			return method.getGenericReturnType();
+			return interfaceMethod.getGenericReturnType();
 		}
 	}
 
@@ -344,7 +344,7 @@ public class DubboReaderExtension implements ReaderExtension {
 	}
 
 	@Override
-	public void applyResponses(ReaderContext context, Operation operation, Method method) {
+	public void applyResponses(ReaderContext context, Operation operation, Method method, Method interfaceMethod) {
 		final Map<Integer, Response> result = new HashMap<Integer, Response>();
 
 		final ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
@@ -354,7 +354,7 @@ public class DubboReaderExtension implements ReaderExtension {
 			result.put(apiOperation.code(), response);
 		}
 
-		final Type responseType = getResponseType(method);
+		final Type responseType = getResponseType(method,interfaceMethod);
 		if (isValidResponse(responseType)) {
 			final Property property = ModelConverters.getInstance().readAsProperty(responseType);
 			if (property != null) {

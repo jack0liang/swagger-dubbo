@@ -124,12 +124,12 @@ public interface ReaderExtension {
 
     /**
      * Reads the responses from the method's annotations and applies these to the operation.
-     *
-     * @param context   is the resource context
+     *  @param context   is the resource context
      * @param operation is the container for the operation data
      * @param method    is the method for reading annotations
+     * @param interfaceMethod
      */
-    void applyResponses(ReaderContext context, Operation operation, Method method);
+    void applyResponses(ReaderContext context, Operation operation, Method method, Method interfaceMethod);
 
     /**
      * Reads the parameters from the method's annotations and applies these to the operation.

@@ -133,7 +133,7 @@ public class Reader {
 				extension.applySchemes(context, operation, method);
 				extension.applySecurityRequirements(context, operation, method);
 				extension.applyTags(context, operation, method);
-				extension.applyResponses(context, operation, method);
+				extension.applyResponses(context, operation, method,interfaceMethod);
 				extension.applyImplicitParameters(context, operation, method);
 				extension.applyParameters(context, operation, method, interfaceMethod);
 				extension.applyExtensions(context, operation, method);
