@@ -463,8 +463,8 @@ public class DubboReaderExtension implements ReaderExtension {
 			//String[] parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(method);
 			//modify by jack.liang on 20190806
 			String[] parameterNames = NameDiscover.parameterNameDiscover.getParameterNames(interfaceMethod);
-			Type[] genericParameterTypes = method.getGenericParameterTypes();
-			Class<?>[] parameterTypes = method.getParameterTypes();
+			Type[] genericParameterTypes = interfaceMethod.getGenericParameterTypes();
+			Class<?>[] parameterTypes = interfaceMethod.getParameterTypes();
 			Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 			Annotation[][] interfaceParamAnnotations = interfaceMethod.getParameterAnnotations();
 			for (int i = 0; i < genericParameterTypes.length; i++) {
